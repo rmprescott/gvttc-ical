@@ -1,4 +1,4 @@
-(ns gvttc-ical.data-2016)
+(ns gvttc-ical.data-2015)
 
 ;; 2016 schedules online
 ;; Monday: https://drive.google.com/file/d/0B8etdrrcPnjHcjFCeDlSQ2wxQzA/view
