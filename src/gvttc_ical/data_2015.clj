@@ -13,6 +13,9 @@
 })
 
 (def monday-league  {
+   :type :monday
+   :start-time 18 ;; 6PM
+   :end-time 22 ;; 10PM
 	 :dates (sorted-map ;; not sure if a sorted map is actually is needed
      #inst "2015-10-06" { :matches [[4 3] [8 10] [11 7] [1 6] [5 2] [9 12] ] }
      #inst "2015-10-05" { :matches [[] [] [] [] [] [] ] }
@@ -54,4 +57,9 @@
     :bye
 	 ]
 })
+
+(def tuesday-league  {})
+(def wednesday-league {})
+
+(def leagues [monday-league tuesday-league wednesday-league])
    
