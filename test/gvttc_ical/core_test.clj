@@ -4,18 +4,32 @@
             [gvttc-ical.data-2015 :as data]
             ))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))
-    (is (= 1 1))
-    (is (= 1 0))
-    (is (= 0 0))
-  ))
+;; move to core
+
 
 (deftest data-is-available
-  (testing "data is available")
+ (testing "data is available"
     (is (resolve 'data/players))
-    (is (resolve 'data/monday-league))
-  )
+   (is (resolve 'data/monday-league))
+  ))
+
+(deftest test-plays-in?
+  (testing "plays-in? predicate"
+    (is (plays-in? :rprescott data/monday-league))
+    (is (plays-in? :rprescott data/tuesday-league))
+    (is (not (plays-in? :rprescott data/wednesday-league)))
+    (is (= [:monday :tuesday] (map :type (filter #(plays-in? :rprescott %) data/leagues))))
+))
+
+;;(deftest test-monday-events
+;;  (testing 
+;;    (is 
+   
+(deftest monday-only-player
+  (testing "a player from Monday only"
+	  (let []
+      (is :todo))))
 
 
+;; @TODO: remove this
+(run-tests)
