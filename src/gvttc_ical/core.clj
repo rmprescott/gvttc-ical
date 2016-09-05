@@ -73,6 +73,7 @@
         data (str  "data-" year) 
         dir "ical" ] 
   (println data)
+  ;; dummy change
   ;; (require '(gvttc-ical data-2015)) ;; TODO: get dynamic loading to work
   (output-all-calendars! dir data/players data/leagues)
   ))
