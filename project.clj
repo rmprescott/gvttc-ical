@@ -9,6 +9,7 @@
   [
    [org.clojure/clojure "1.8.0"]
    [org.clojure/tools.cli "0.3.5"]
+   [clj-icalendar "0.1.3"]
   ]
   :main ^:skip-aot gvttc-ical.core
   :target-path "target/%s"

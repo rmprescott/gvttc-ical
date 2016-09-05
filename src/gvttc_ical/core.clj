@@ -2,6 +2,7 @@
 	(:require 
     [clojure.tools.cli :refer [parse-opts]]
 		[gvttc-ical.data-2015 :as data] ;; get dynamic loading to work
+    [clj-icalendar.core :as ical]
   )
   (:gen-class))
 
@@ -34,6 +35,14 @@
              :when (plays-in? (:id p) l)]
          (events p l))})
 
+
+(defn write-cal-file[file-name calendar]
+  (spit file-name (ical/create-cal "Tiny Tools" "gvttc-ical" "V0.1" "EN"))
+  ;;(with-open [wrtr (clojure.java.io/writer "/tmp/test.ical")]
+  ;;  (write-cal vevents wrtr))
+  )
+
+
 (defn data->ical [d] 
   d) ;; TODO: really implement this
 
@@ -59,11 +68,10 @@
 
 (defn output-all-calendars! [dir players leagues]
 	(doseq 
-		[calendar (all-calendars players leagues)
-     file (cal->file dir calendar)]
-        (println file "=" calendar)
-        ;; something like: (spit file calendar)
-        ))
+		[calendar (all-calendars players leagues)]
+       ;; something like: (spit file calendar)
+       (write-cal-file (cal->file dir calendar) calendar)
+       ))
 
 ;; TODO: integrate better CLI options using: https://github.com/clojure/tools.cli
 (defn -main
@@ -72,8 +80,9 @@
   (let [year "2015" ;; TODO: parse from arguments
         data (str  "data-" year) 
         dir "ical" ] 
-  (println data)
+  ;;(println data)
   ;; dummy change
   ;; (require '(gvttc-ical data-2015)) ;; TODO: get dynamic loading to work
+  (.mkdir (java.io.File. "ical")) ;; spit fails if the folder doesn't exist TODO: figure out a strategy
   (output-all-calendars! dir data/players data/leagues)
   ))
