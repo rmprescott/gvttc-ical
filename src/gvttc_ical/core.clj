@@ -80,7 +80,6 @@
 
 (defn cal->file-name [dir calendar]
   "file name to use for this calendar"
-<<<<<<< HEAD
 	(when-let [pid (get-in calendar [:player :id])]
     (log/info "Processing pid" pid)
 	  (format "%s/%s.ics" dir (name pid))))
@@ -88,7 +87,7 @@
 (defn output-all-calendars! [dir players leagues]
 	(doseq ;; same syntax as "for" except it evaluates
 		[calendar (calendars players leagues)]
-      (when-let [filename (cal->file dir calendar)]
+      (when-let [filename (cal->file-name dir calendar)]
        (write-cal-file! filename calendar))))
 
 ;; TODO: integrate better CLI options using: https://github.com/clojure/tools.cli
