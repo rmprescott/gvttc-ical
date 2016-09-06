@@ -1,6 +1,7 @@
 (ns gvttc-ical.core
 	(:require 
     [clojure.tools.cli :refer [parse-opts]]
+    [taoensso.timbre :as log]
 		[gvttc-ical.data-2015 :as data] ;; get dynamic loading to work
     [clj-icalendar.core :as ical]
   )
@@ -36,20 +37,25 @@
          (events p l))})
 
 
-(defn write-cal-file[file-name calendar]
-  (spit file-name (ical/create-cal "Tiny Tools" "gvttc-ical" "V0.1" "EN"))
+(defn write-ical-file[file-name icalendar]
+  (log/info "Generating" file-name)
+  (spit file-name icalendar)
   ;;(with-open [wrtr (clojure.java.io/writer "/tmp/test.ical")]
   ;;  (write-cal vevents wrtr))
   )
 
 
 (defn data->ical [d] 
-  d) ;; TODO: really implement this
+  ;; TODO: really implement this
+  (ical/create-cal "Tiny Tools" "gvttc-ical" "V0.1" "EN")
+  ) 
 
 (defn calendar [p leagues]
   (-> 
     (calendar-data p leagues) ;; calcuate the actual data
-    (data->ical))) ;; convert data to icalendar format
+    ;; TODO: remove this? Seems unnecessary since this now returns data rather than ical
+    ;;(data->ical))) ;; convert data to icalendar format
+    ))
 
 (defn pid->player [pid players]
   (conj { :id pid } (pid players)))
@@ -61,16 +67,17 @@
   (for [pid (all-players leagues)]
 		(calendar (pid->player pid players) leagues)))
 
-(defn cal->file [dir calendar]
+(defn cal->file-name [dir calendar]
   "file name to use for this calendar"
 	(let [pid (get-in calendar [:player :id])]
+    (log/info "Processing pid" pid)
 	  (format "%s/%s.ics" dir (name pid))))
 
 (defn output-all-calendars! [dir players leagues]
 	(doseq 
 		[calendar (all-calendars players leagues)]
        ;; something like: (spit file calendar)
-       (write-cal-file (cal->file dir calendar) calendar)
+       (write-cal-file (cal->file-name dir calendar) (data->ical calendar))
        ))
 
 ;; TODO: integrate better CLI options using: https://github.com/clojure/tools.cli
@@ -83,6 +90,6 @@
   ;;(println data)
   ;; dummy change
   ;; (require '(gvttc-ical data-2015)) ;; TODO: get dynamic loading to work
-  (.mkdir (java.io.File. "ical")) ;; spit fails if the folder doesn't exist TODO: figure out a strategy
+  (.mkdir (java.io.File. dir)) ;; spit fails if the folder doesn't exist TODO: figure out a strategy
   (output-all-calendars! dir data/players data/leagues)
   ))
