@@ -2,7 +2,8 @@
 	(:require 
     [clojure.tools.cli :refer [parse-opts]]
 		[gvttc-ical.data-2015 :as data] ;; get dynamic loading to work
-    [clj-icalendar.core :as ical]
+    [clj-icalendar.core :as icalendar]
+    [clj-ical.format :as ical]
   )
   (:gen-class))
 
@@ -28,23 +29,38 @@
     (event p league e)))
 
 (defn calendar-data [p leagues]
+  "return a map of calendar data for a single player 
+	 for all the leagues they play in"
   {
     :player p
     :events ;; all events from all leagues player is in
-       (for [l leagues
+      (for [l leagues
              :when (plays-in? (:id p) l)]
          (events p l))})
 
 
-(defn write-cal-file[file-name calendar]
-  (spit file-name (ical/create-cal "Tiny Tools" "gvttc-ical" "V0.1" "EN"))
+(defn write-cal-file![filename calendar]
+  (println filename)
+  (spit filename calendar)
+  ;;(spit file-name (icalendar/create-cal "Tiny Tools" "gvttc-ical" "V0.1" "EN"))
   ;;(with-open [wrtr (clojure.java.io/writer "/tmp/test.ical")]
   ;;  (write-cal vevents wrtr))
   )
 
+(defn event->ical [e]
+  (println e)
+  [:VEVENT
+     [:UID :TODO]
+     [:DTSTART :TODO]
+     [:DTEND :TODO]
+])
 
 (defn data->ical [d] 
-  d) ;; TODO: really implement this
+  (ical/write-object 
+     [:VCALENDAR 
+       [:VERSION "2.0"
+       (for [event (:events d)]
+          (event->ical event))]]))
 
 (defn calendar [p leagues]
   (-> 
@@ -55,23 +71,23 @@
   (conj { :id pid } (pid players)))
 
 ;; NB: this function (and everything it calls) is unit testable
-(defn all-calendars 
-  "create a lazy sequence of the calendar for each player"
+(defn calendars 
+  "create a lazy sequence of a calendar for each player"
   [players leagues]
   (for [pid (all-players leagues)]
 		(calendar (pid->player pid players) leagues)))
 
 (defn cal->file [dir calendar]
   "file name to use for this calendar"
-	(let [pid (get-in calendar [:player :id])]
+	(when-let [pid (get-in calendar [:player :id])]
+		(println :pid pid)
 	  (format "%s/%s.ics" dir (name pid))))
 
 (defn output-all-calendars! [dir players leagues]
-	(doseq 
-		[calendar (all-calendars players leagues)]
-       ;; something like: (spit file calendar)
-       (write-cal-file (cal->file dir calendar) calendar)
-       ))
+	(doseq ;; same syntax as "for" except it evaluates
+		[calendar (calendars players leagues)]
+      (when-let [filename (cal->file dir calendar)]
+       (write-cal-file! filename calendar))))
 
 ;; TODO: integrate better CLI options using: https://github.com/clojure/tools.cli
 (defn -main
@@ -83,6 +99,6 @@
   ;;(println data)
   ;; dummy change
   ;; (require '(gvttc-ical data-2015)) ;; TODO: get dynamic loading to work
-  (.mkdir (java.io.File. "ical")) ;; spit fails if the folder doesn't exist TODO: figure out a strategy
+  (.mkdir (java.io.File. dir)) ;; spit fails if the folder doesn't exist TODO: figure out a strategy
   (output-all-calendars! dir data/players data/leagues)
   ))
