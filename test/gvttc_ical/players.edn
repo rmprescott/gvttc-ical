@@ -1,0 +1,16 @@
+{
+   :cronaldo {:name "Cristiano Ronaldo" }
+   :gbale {:name "Gareth Bale" }
+   :kbenzema {:name "Karim Benzema" }
+   :sramos {:name "Sergio Ramos" }
+   :lmessi {:name "Lionel Messi" }
+   :neymar {:name "Neymar Jr" }
+   :lsuarez {:name "Luis Suarez" }
+   :ainiesta {:name "Andres Iniesta" }
+   :mneuer {:name "Manual Neuer" }
+   :tmuller {:name "Thomas Muller" }
+   :fribery {:name "Franck Ribery" }
+   :arobben {:name "Arjen Robben" }
+   
+   :ecantona {:name "Eric Cantona"}
+}
