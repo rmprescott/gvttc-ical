@@ -14,9 +14,15 @@
    :bye]
   :teams
   [nil
-   [:cronaldo :gbale :kbenzema :sramos]
-   [:lmessi :neymar :lsuarez :ainiesta]
-   [:mneuer :tmuller :fribery :arobben]
+   [:cronaldo :gbale :kbenzema :sramos] ;; Real Madrid
+   [:lmessi :neymar :lsuarez :ainiesta] ;; Barcelona
+   [:mneuer :tmuller :fribery :arobben] ;; Bayern Munich
  ]}
- {:type :tuesday, :teams [nil [:fribery :kbenzema] [:mneuer :tmuller] [:sramos :ainiesta]]}
+ {:type :tuesday, 
+  :teams 
+  [nil 
+   [:fribery :kbenzema] ;; France
+   [:mneuer :tmuller]  ;; Germany
+   [:sramos :ainiesta] ;; Spain
+  ]}
  ]

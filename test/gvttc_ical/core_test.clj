@@ -10,30 +10,34 @@
 
 (def test-players (atom nil))
 (def test-leagues (atom nil))
+(def monday-league (atom nil))
+(def tuesday-league (atom nil))
 
 (defn load-test-data "Read test data from a file."
   [test-fn]
   (log/info "Loading test data")
   (reset! test-players (edn/read-string (slurp "test/gvttc_ical/players.edn")))
   (reset! test-leagues (edn/read-string (slurp "test/gvttc_ical/leagues.edn")))
+  (reset! monday-league (first @test-leagues))
+  (reset! tuesday-league (second @test-leagues))
   
   (test-fn))
 
-(deftest player-test-data-is-available 
-  (testing "player test data is loaded from edn"
-     (is (> (count @test-players) 0))
+(deftest test-data-is-sane? 
+  (testing "sanity checks of test data"
+    (is (> (count @test-players) 10))
+    (is (>= (count @test-leagues) 2))
+    (is (= (@monday-league :type) :monday ))
+    (is (= (@tuesday-league :type) :tuesday))
   ))
 
-(deftest league-test-data-is-available 
-  (testing "league test data is loaded from edn"
-     (is (> (count @test-leagues) 0))
-  ))
 
-(deftest test-plays-in-edn?
+
+(deftest test-plays-in?
   (testing "plays-in? predicate with edn test data"
     ;; :cronaldo plays on Monday but not Tuesday
-    (is (plays-in? :cronaldo (first @test-leagues)))
-    (is (not (plays-in? :cronaldo (second @test-leagues))))
+    (is (plays-in? :cronaldo @monday-league))
+    (is (not (plays-in? :cronaldo @tuesday-league)))
     (is (= [:monday] (map :type (filter #(plays-in? :cronaldo %) @test-leagues))))
     ;; :mneuer plays both Monday and Tuesday
     (is (= [:monday :tuesday] (map :type (filter #(plays-in? :mneuer %) @test-leagues))))
@@ -43,25 +47,15 @@
     (is (= [] (map :type (filter #(plays-in? :ecantona %) @test-leagues))))
 ))
 
-(deftest data-is-available
- (testing "data is available"
-    (is (resolve 'data/players))
-   (is (resolve 'data/monday-league))
-  ))
-
-(deftest test-plays-in?
-  (testing "plays-in? predicate"
-    (is (plays-in? :rprescott data/monday-league))
-    (is (plays-in? :rprescott data/tuesday-league))
-    (is (not (plays-in? :rprescott data/wednesday-league)))
-    (is (= [:monday :tuesday] (map :type (filter #(plays-in? :rprescott %) data/leagues))))
-))
-
-
 (deftest monday-only-player
   (testing "a player from Monday only"
 	  (let []
       (is :todo))))
+
+(deftest todo-name-this-test 
+  (testing "todo: what is this testing?"
+    (println (event :cronaldo @monday-league nil))
+))
 
 (use-fixtures :once load-test-data)
 
