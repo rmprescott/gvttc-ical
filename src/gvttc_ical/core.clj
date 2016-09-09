@@ -3,7 +3,6 @@
     [clojure.tools.cli :refer [parse-opts]]
     [taoensso.timbre :as log]
 		[gvttc-ical.data-2015 :as data] ;; get dynamic loading to work
-    [clj-icalendar.core :as icalendar]
     [clj-ical.format :as ical]
   )
   (:gen-class))
@@ -59,14 +58,13 @@
        [:VERSION "2.0"
        (for [event (:events d)]
           (event->ical event))]]))
-  ;;(icalendar/create-cal "Tiny Tools" "gvttc-ical" "V0.1" "EN")
 
 (defn calendar [p leagues]
   (-> 
     (calendar-data p leagues) ;; calcuate the actual data
     ;; TODO: remove this? Seems unnecessary since this now returns data rather than ical
-    ;;(data->ical))) ;; convert data to icalendar format
-    ))
+    ;; rmp:  this is still the function that converts the map of data to the specific format needed as input to ical/write-object
+    (data->ical))) ;; convert data to icalendar format
 
 (defn pid->player [pid players]
   (conj { :id pid } (pid players)))
@@ -78,7 +76,7 @@
   (for [pid (all-players leagues)]
 		(calendar (pid->player pid players) leagues)))
 
-(defn cal->file-name [dir calendar]
+(defn cal->filename [dir calendar]
   "file name to use for this calendar"
 	(when-let [pid (get-in calendar [:player :id])]
     (log/info "Processing pid" pid)
@@ -87,7 +85,7 @@
 (defn output-all-calendars! [dir players leagues]
 	(doseq ;; same syntax as "for" except it evaluates
 		[calendar (calendars players leagues)]
-      (when-let [filename (cal->file-name dir calendar)]
+      (when-let [filename (cal->filename dir calendar)]
        (write-cal-file! filename calendar))))
 
 ;; TODO: integrate better CLI options using: https://github.com/clojure/tools.cli
