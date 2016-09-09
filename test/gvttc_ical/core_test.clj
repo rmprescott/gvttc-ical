@@ -47,6 +47,13 @@
 	  (let []
       (is :todo))))
 
+(deftest monday-league-testing-cronaldo
+  (testing "monday-league basic behavior for cronaldo"
+	  (let [cal (calendar-data :cronaldo monday-league)]
+      (= :cronaldo (:player cal))
+      (is (> (count (:events cal)) 0))
+		)))
+
 (deftest todo-name-this-test 
   (testing "todo: what is this testing?"
     (println (event :cronaldo monday-league nil))

@@ -31,12 +31,21 @@
 (defn calendar-data [p leagues]
   "return a map of calendar data for a single player 
 	 for all the leagues they play in"
+  (let [
+     events ;; all events from all leagues player is in
+       (for [l leagues
+         ;;:when (plays-in? p l)
+         ]
+         (do
+           (println "plays-in?" p l (plays-in? p l))
+			     (events p l))
+         )
+         ]
   {
     :player p
-    :events ;; all events from all leagues player is in
-      (for [l leagues
-             :when (plays-in? (:id p) l)]
-         (events p l))})
+    :events events
+  }
+))
 
 
 (defn write-cal-file![filename calendar]
