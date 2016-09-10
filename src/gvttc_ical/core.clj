@@ -8,44 +8,39 @@
   (:gen-class))
 
 (defn plays-in? [pid league]
-  (some #{pid} (flatten (:teams league))))
+  (let [r (some #{pid} (flatten (:teams league)))]
+		;;(println "plays-in?" r "<-" pid league)  ;; seem to have problems with this function
+    r))
 
 (defn all-players [all-leagues]
   (->> (map :teams data/leagues) flatten distinct (filter #(not (nil? %)))))
 
-(defn event [p league night]
-  (println night)
+(defn match [p league event]
+   "returns information about this match"
+  ;; (println "event: " event)
   (let
     [start-time (fn [d] (println "d: " (class d)) (. d setTime (:start-time league)))]
-    { ;;:start-time (start-time (key night))
+    { ;;:start-time (start-time (key event))
       :format :todo
       :vs-team :todo
       :vs-players [:todo :todo :todo :todo]
     }
   ))
 
-(defn events [p league]
+(defn matches [p league]
   (for [e (:events league)]
-    (event p league e)))
+    (match p league e)))
 
 (defn calendar-data [p leagues]
   "return a map of calendar data for a single player 
 	 for all the leagues they play in"
-  (let [
-     events ;; all events from all leagues player is in
-       (for [l leagues
-         ;;:when (plays-in? p l)
-         ]
-         (do
-           (println "plays-in?" p l (plays-in? p l))
-			     (events p l))
-         )
-         ]
+  (let [all-matches ;; all matches from all leagues player is in
+       (for [l leagues :when (plays-in? p l)]
+			     (matches p l))]
   {
     :player p
-    :events events
-  }
-))
+    :matches (apply concat all-matches) ;; flatten only one level deep
+  }))
 
 
 (defn write-cal-file![filename calendar]
@@ -53,7 +48,7 @@
   (log/info "Generating" filename)
   (spit filename calendar))
 
-(defn event->ical [e]
+(defn match->ical [e]
   (println e)
   [:VEVENT
      [:UID :TODO]
@@ -61,19 +56,20 @@
      [:DTEND :TODO]
 ])
 
-(defn data->ical [d] 
+(defn matches->ical [d] 
   (ical/write-object 
      [:VCALENDAR 
        [:VERSION "2.0"
-       (for [event (:events d)]
-          (event->ical event))]]))
+       (for [match (:matches d)]
+          (match->ical match))]]))
 
 (defn calendar [p leagues]
+  "create a calendar of all the matches a player will play across all leagues"
   (-> 
-    (calendar-data p leagues) ;; calcuate the actual data
+    (matches p leagues) ;; calcuate the actual matches
     ;; TODO: remove this? Seems unnecessary since this now returns data rather than ical
     ;; rmp:  this is still the function that converts the map of data to the specific format needed as input to ical/write-object
-    (data->ical))) ;; convert data to icalendar format
+    (matches->ical))) ;; convert match data to icalendar format
 
 (defn pid->player [pid players]
   (conj { :id pid } (pid players)))

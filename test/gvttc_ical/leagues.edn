@@ -11,18 +11,30 @@
    "6 & Half of 5"
    "7 & 8"
    :bye]
-  :teams
+
+  ;; teams
+  ;; team number is their index (starting at 1 - no team 0)
+  ;; team member is also their index (starting at zero)
+  :teams 
   [nil
    [:cronaldo :gbale :kbenzema :sramos] ;; Real Madrid
    [:lmessi :neymar :lsuarez :ainiesta] ;; Barcelona
    [:mneuer :tmuller :fribery :arobben] ;; Bayern Munich
- ]
-  :events
-  {#inst "2015-10-06T00:00:00.000-00:00"
-   {:matches [[4 3] [8 10] [11 7] [1 6] [5 2] [9 12]]}
-   #inst "2015-10-05T00:00:00.000-00:00" 
-   {:matches [[] [] [] [] [] []]}}
+  ]
+
+  ;; which teams play that week
+  :events {
+	 #inst "2015-10-06" {:matches [[4 3] [8 10] [11 7] [1 6] [5 2] [9 12]]}
+   #inst "2015-10-05" {:matches [[6 12] [7 5] [8 4] [3 9] [10 2] [1 11]]}
   }
+  
+  ;; TODO: various types of matches/events
+  ;; - holiday
+  ;; - Brazillian teams
+  ;; Tuesday only
+  ;; - position night
+  ;; - ladder
+}
 
  {
   :type :tuesday, 

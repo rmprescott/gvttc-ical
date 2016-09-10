@@ -1,7 +1,6 @@
 (ns gvttc-ical.core-test
   (:require [clojure.test :refer :all]
             [gvttc-ical.core :refer :all]
-            ;;[gvttc-ical.data-2015 :as data]
             [clojure.edn :as edn]
             [taoensso.timbre :as log]
             ))
@@ -51,13 +50,8 @@
   (testing "monday-league basic behavior for cronaldo"
 	  (let [cal (calendar-data :cronaldo monday-league)]
       (= :cronaldo (:player cal))
-      (is (> (count (:events cal)) 0))
+      (> (count (:matches cal)) 0)
 		)))
-
-(deftest todo-name-this-test 
-  (testing "todo: what is this testing?"
-    (println (event :cronaldo monday-league nil))
-))
 
 (use-fixtures :once load-test-data)
 
