@@ -31,10 +31,13 @@
   (for [e (:events league)]
     (match p league e)))
 
-(defn calendar-data [p leagues]
+(defn calendar-data 
   "return a map of calendar data for a single player 
 	 for all the leagues they play in"
-  (let [all-matches ;; all matches from all leagues player is in
+  [p leagues]
+  {:pre  [(sequential? leagues)] }
+  (assert (sequential? leagues) "leagues must be a sequential")
+  (let [all-matches ;; all matche from all leagues player is in
        (for [l leagues :when (plays-in? p l)]
 			     (matches p l))]
   {

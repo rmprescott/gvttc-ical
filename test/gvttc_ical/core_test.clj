@@ -48,9 +48,11 @@
 
 (deftest monday-league-testing-cronaldo
   (testing "monday-league basic behavior for cronaldo"
-	  (let [cal (calendar-data :cronaldo monday-league)]
+	  (let [
+      cal (calendar-data :cronaldo [monday-league])
+      matches (:matches cal)]
       (= :cronaldo (:player cal))
-      (> (count (:matches cal)) 0)
+      (> (count matches) 0)
 		)))
 
 (use-fixtures :once load-test-data)
